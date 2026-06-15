@@ -24,7 +24,6 @@
             padding: 20px 24px;
         }
 
-        /* Header */
         .medical-header {
             background: linear-gradient(135deg, #0a2b3e 0%, #0d3b52 100%);
             border-radius: 20px;
@@ -69,7 +68,7 @@
             flex-wrap: wrap;
         }
 
-        /* Upload Section - Akan hilang setelah training */
+        /* Upload Section */
         .upload-section {
             background: white;
             border-radius: 24px;
@@ -154,7 +153,6 @@
             gap: 28px;
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 24px;
@@ -182,7 +180,6 @@
             padding: 24px 26px;
         }
 
-        /* Form - 3 Columns */
         .form-three-columns {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -219,6 +216,10 @@
             box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
         }
 
+        .field-hidden {
+            display: none;
+        }
+
         .btn-assess {
             background: linear-gradient(105deg, #166534, #0f4c2f);
             color: white;
@@ -243,7 +244,6 @@
             cursor: not-allowed;
         }
 
-        /* Result Area */
         .result-card {
             background: #f9fcff;
             border-radius: 20px;
@@ -386,7 +386,7 @@
         </div>
     </div>
 
-    <!-- UPLOAD SECTION - Akan HILANG setelah training -->
+    <!-- UPLOAD SECTION -->
     <div id="uploadSection" class="upload-section">
         <div class="upload-header">
             <span>📁</span>
@@ -406,9 +406,8 @@
         </div>
     </div>
 
-    <!-- MAIN CONTENT - Awalnya disable, aktif setelah training -->
+    <!-- MAIN CONTENT -->
     <div class="clinical-grid" id="mainContent">
-        <!-- LEFT: Form -->
         <div class="card">
             <div class="card-header">
                 <span>📋</span>
@@ -420,7 +419,6 @@
                     <div class="field"><label>Usia (tahun)</label><input type="number" id="age" placeholder="cth: 52"></div>
                     <div class="field"><label>BMI (kg/m²)</label><input type="number" id="bmi" step="0.1" placeholder="cth: 27.3"></div>
                     <div class="field"><label>Lingkar Pinggang (cm)</label><input type="number" id="waist" placeholder="cth: 94"></div>
-                    <div class="field"><label>Lingkar Pinggul (cm)</label><input type="number" id="hip" placeholder="cth: 102"></div>
                     <div class="field"><label>Gula Puasa (mg/dL)</label><input type="number" id="glucose" placeholder="cth: 98"></div>
                     <div class="field"><label>HbA1c (%)</label><input type="number" id="hba1c" step="0.1" placeholder="cth: 5.4"></div>
                     <div class="field"><label>HDL Cholesterol (mg/dL)</label><input type="number" id="hdl" placeholder="cth: 45"></div>
@@ -431,14 +429,21 @@
                     <div class="field"><label>Konsumsi Sayur/Buah</label><select id="vegetables"><option value="" disabled selected>-- Pilih --</option><option value="daily">Setiap hari</option><option value="not_daily">Tidak setiap hari</option></select></div>
                     <div class="field"><label>Tidur (jam/hari)</label><input type="number" id="sleep" step="0.5" placeholder="cth: 6.5"></div>
                     <div class="field"><label>Riwayat Keluarga Diabetes</label><select id="family"><option value="" disabled selected>-- Pilih --</option><option value="no">Tidak</option><option value="first_degree">Orang tua/saudara kandung</option><option value="second_degree">Kakek/nenek/paman/bibi</option></select></div>
-                    <div class="field"><label>Riwayat GDM (wanita)</label><select id="gdm"><option value="" disabled selected>-- Pilih --</option><option value="no">Tidak pernah</option><option value="yes">Pernah (diabetes gestasional)</option></select></div>
-                    <div class="field"><label>Obat Antipsikotik</label><select id="antipsychotics"><option value="" disabled selected>-- Pilih --</option><option value="no">Tidak</option><option value="yes">Ya</option></select></div>
+                    
+                    <!-- Field khusus wanita - akan muncul hanya jika gender = female -->
+                    <div class="field field-women" id="gdmField" style="display: none;">
+                        <label>Riwayat GDM (Diabetes Gestasional)</label>
+                        <select id="gdm">
+                            <option value="" disabled selected>-- Pilih --</option>
+                            <option value="no">Tidak pernah</option>
+                            <option value="yes">Pernah (saat hamil)</option>
+                        </select>
+                    </div>
                 </div>
                 <button class="btn-assess" id="assessBtn" disabled>🔍 Generate Clinical Assessment</button>
             </div>
         </div>
 
-        <!-- RIGHT: Hasil -->
         <div class="card">
             <div class="card-header">
                 <span>📊</span>
@@ -468,6 +473,24 @@
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+    // ============================================================
+    // TOGGLE GDM FIELD BERDASARKAN GENDER
+    // ============================================================
+    const genderSelect = document.getElementById('gender');
+    const gdmField = document.getElementById('gdmField');
+    const gdmSelect = document.getElementById('gdm');
+
+    genderSelect.addEventListener('change', function() {
+        if (this.value === 'female') {
+            gdmField.style.display = 'flex';
+            gdmSelect.required = true;
+        } else {
+            gdmField.style.display = 'none';
+            gdmSelect.value = '';
+            gdmSelect.required = false;
+        }
+    });
+
     // ============================================================
     // CLINICAL RULES ENGINE (FINDRISC + Additional Factors)
     // ============================================================
@@ -527,11 +550,9 @@
             if (sleep < 5) score += 4;
             else if (sleep < 6) score += 2;
 
+            // GDM hanya untuk wanita
             const gdm = (data.gdm || 'no').toLowerCase();
             if (gdm === 'yes' && gender === 'female') score += 4;
-
-            const antipsychotics = (data.antipsychotics || 'no').toLowerCase();
-            if (antipsychotics === 'yes') score += 3;
 
             return Math.min(20, score);
         },
@@ -607,12 +628,12 @@
     let trainingMatrix = null;
     let datasetSize = 0;
 
-    // Helper functions
     function encodeGender(g) { return g === 'male' ? 0 : 1; }
     function encodeActivity(a) { const map = { high:3, moderate:2, low:1, sedentary:0 }; return map[a] ?? 2; }
     function encodeFamily(f) { return f === 'first_degree' ? 1 : (f === 'second_degree' ? 0.5 : 0); }
     function encodeHypertension(h) { return h === 'yes' ? 1 : 0; }
     function encodeVegetables(v) { return v === 'daily' ? 1 : 0; }
+    function encodeGDM(g) { return g === 'yes' ? 1 : 0; }
 
     function standardize(features, mean, std) {
         return features.map((v, i) => (v - mean[i]) / std[i]);
@@ -682,10 +703,10 @@
             else if (c.includes('tekanan') || c.includes('blood')) colMap[k] = 'blood_pressure';
             else if (c.includes('aktivitas') || c.includes('activity')) colMap[k] = 'activity';
             else if (c.includes('tidur') || c.includes('sleep')) colMap[k] = 'sleep_hours';
-            else if (c.includes('stress')) colMap[k] = 'stress_level';
             else if (c.includes('keluarga') || c.includes('family')) colMap[k] = 'family_history';
             else if (c.includes('sayur') || c.includes('vegetable')) colMap[k] = 'vegetables';
             else if (c.includes('hipertensi') || c.includes('hypertension')) colMap[k] = 'hypertension';
+            else if (c.includes('gdm') || c.includes('gestasional')) colMap[k] = 'gdm';
         });
         
         let df = rows.map(r => {
@@ -694,7 +715,7 @@
             return obj;
         });
         
-        // Calculate risk scores using FINDRISC
+        // Calculate risk scores
         df = df.map(r => {
             const pat = {
                 gender: r.gender || 'male',
@@ -711,8 +732,7 @@
                 hypertension: r.hypertension || 'no',
                 sleep_hours: r.sleep_hours || 7,
                 family_history: r.family_history || 'no',
-                gdm: r.gdm || 'no',
-                antipsychotics: r.antipsychotics || 'no'
+                gdm: r.gdm || 'no'
             };
             const findrisc = ClinicalRules.calculateFINDRISC(pat);
             const additional = ClinicalRules.calculateAdditionalRisk(pat);
@@ -738,14 +758,15 @@
                 row.sleep_hours || 7,
                 encodeVegetables(row.vegetables || 'daily'),
                 encodeHypertension(row.hypertension || 'no'),
-                encodeFamily(row.family_history || 'no')
+                encodeFamily(row.family_history || 'no'),
+                encodeGDM(row.gdm || 'no')
             ];
             featuresList.push(feat);
             targets.push(row.risk_score);
         }
         
         // Standardization
-        const nFeat = 14;
+        const nFeat = 15;
         let mean = Array(nFeat).fill(0), std = Array(nFeat).fill(0);
         for (let f of featuresList) for (let i = 0; i < nFeat; i++) mean[i] += f[i];
         for (let i = 0; i < nFeat; i++) mean[i] /= featuresList.length;
@@ -766,13 +787,11 @@
         
         setTimeout(() => {
             document.getElementById('loadingOverlay').style.display = 'none';
-            // HIDE UPLOAD SECTION - Professional: hilang setelah training
             document.getElementById('uploadSection').classList.add('hidden');
             document.getElementById('assessBtn').disabled = false;
             document.getElementById('aiStatusBadge').innerHTML = '✓ AI Active';
             document.getElementById('aiStatusBadge').style.background = '#1a6b4a';
             
-            // Update result panel
             document.getElementById('resultPanel').innerHTML = `
                 <div class="empty-state" style="background:#f0f7fc; border-radius:20px;">
                     <span style="font-size: 2.5rem;">✅</span>
@@ -799,7 +818,7 @@
             return;
         }
         
-        const required = ['gender', 'age', 'bmi', 'waist', 'glucose', 'hba1c', 'hdl', 'trig', 'bp', 'hypertension', 'activity', 'vegetables', 'sleep', 'family', 'gdm', 'antipsychotics'];
+        const required = ['gender', 'age', 'bmi', 'waist', 'glucose', 'hba1c', 'hdl', 'trig', 'bp', 'hypertension', 'activity', 'vegetables', 'sleep', 'family'];
         for (let id of required) {
             const val = document.getElementById(id).value;
             if (!val || val === "") {
@@ -808,8 +827,19 @@
             }
         }
         
+        const gender = document.getElementById('gender').value;
+        
+        // Validasi GDM khusus wanita
+        if (gender === 'female') {
+            const gdmVal = document.getElementById('gdm').value;
+            if (!gdmVal || gdmVal === "") {
+                alert("Harap lengkapi data: Riwayat GDM (Diabetes Gestasional)");
+                return;
+            }
+        }
+        
         const patient = {
-            gender: document.getElementById('gender').value,
+            gender: gender,
             age: parseFloat(document.getElementById('age').value),
             bmi: parseFloat(document.getElementById('bmi').value),
             waist: parseFloat(document.getElementById('waist').value),
@@ -823,16 +853,15 @@
             vegetables: document.getElementById('vegetables').value,
             sleep_hours: parseFloat(document.getElementById('sleep').value),
             family_history: document.getElementById('family').value,
-            gdm: document.getElementById('gdm').value,
-            antipsychotics: document.getElementById('antipsychotics').value
+            gdm: gender === 'female' ? document.getElementById('gdm').value : 'no'
         };
         
-        // Clinical rules score (FINDRISC based)
+        // Clinical rules score
         const findriscScore = ClinicalRules.calculateFINDRISC(patient);
         const additionalScore = ClinicalRules.calculateAdditionalRisk(patient);
         let clinicalScore = ClinicalRules.calculateRiskPercentage(findriscScore, additionalScore);
         
-        // SVM prediction if model available
+        // SVM prediction
         let finalScore = clinicalScore;
         let methodUsed = "FINDRISC + Clinical Rules";
         let svmPred = null;
@@ -843,12 +872,12 @@
                 patient.fasting_glucose, patient.hba1c, patient.hdl, patient.triglycerides,
                 patient.blood_pressure, encodeActivity(patient.activity), patient.sleep_hours,
                 encodeVegetables(patient.vegetables), encodeHypertension(patient.hypertension),
-                encodeFamily(patient.family_history)
+                encodeFamily(patient.family_history), encodeGDM(patient.gdm)
             ];
             const scaledFeat = standardize(features, scaler.mean, scaler.std);
             
             let svmVal = trainedWeights[0];
-            for (let i = 0; i < 14; i++) svmVal += trainedWeights[i + 1] * scaledFeat[i];
+            for (let i = 0; i < 15; i++) svmVal += trainedWeights[i + 1] * scaledFeat[i];
             svmPred = Math.min(100, Math.max(0, svmVal));
             finalScore = (svmPred * 0.5) + (clinicalScore * 0.5);
             methodUsed = "Hybrid: SVM 50% + FINDRISC 50%";
@@ -874,6 +903,11 @@
             const [status, emoji] = ClinicalRules.getStatus(p[2], p[1], patient.gender);
             paramHtml += `<div class="param-row"><span>${emoji} ${p[0]}</span><span><strong>${p[1]}</strong> → ${status}</span></div>`;
         });
+        
+        // Tambahkan GDM jika wanita
+        if (patient.gender === 'female' && patient.gdm === 'yes') {
+            paramHtml += `<div class="param-row"><span>🤰 Riwayat GDM</span><span><strong>Ya</strong> → +4 poin risiko</span></div>`;
+        }
         
         let recoText = "";
         if (category.name === "Low Risk") {
