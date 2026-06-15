@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Risk Predictor | AI Clinical Decision Support System</title>
+    <title>Diabetes Risk Assessment System | Clinical AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -18,169 +18,151 @@
             color: #1a2c3e;
         }
 
-        /* Main Layout */
-        .app {
+        /* Hidden upload input */
+        .hidden-upload {
+            display: none;
+        }
+
+        /* Main Container */
+        .app-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 24px 28px;
+            padding: 20px 24px;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #0a2b3e 0%, #154f6b 100%);
-            border-radius: 24px;
-            padding: 28px 36px;
+        /* Header Professional */
+        .hospital-header {
+            background: linear-gradient(135deg, #0a2b3e 0%, #0d3b52 100%);
+            border-radius: 20px;
+            padding: 24px 32px;
             margin-bottom: 28px;
             color: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
         }
 
-        .header h1 {
-            font-size: 1.8rem;
+        .hospital-header h1 {
+            font-size: 1.6rem;
             font-weight: 600;
+            letter-spacing: -0.3px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .badge {
-            background: rgba(255,255,255,0.15);
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .subtitle {
-            opacity: 0.85;
-            font-size: 0.9rem;
-            margin-top: 12px;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        /* Status Bar - Dataset Info */
-        .dataset-status-bar {
-            background: white;
-            border-radius: 20px;
-            padding: 16px 24px;
-            margin-bottom: 28px;
-            display: flex;
             justify-content: space-between;
-            align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid #e2eaf1;
-        }
-
-        .dataset-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .dataset-badge {
-            background: #e8f0fe;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #1a5d7d;
-        }
-
-        .dataset-stats {
-            display: flex;
             gap: 12px;
         }
 
-        .stat-chip {
-            background: #f0f4f9;
+        .hospital-badge {
+            background: rgba(255,255,255,0.12);
             padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .btn-change-dataset {
-            background: transparent;
-            border: 1.5px solid #cbdde6;
-            padding: 8px 20px;
             border-radius: 40px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #2c6282;
         }
 
-        .btn-change-dataset:hover {
-            background: #eef3fc;
-            border-color: #2c7da0;
+        .header-sub {
+            display: flex;
+            gap: 24px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            flex-wrap: wrap;
         }
 
-        /* Main Grid */
-        .main-grid {
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-content {
+            background: white;
+            padding: 32px 48px;
+            border-radius: 28px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2eaf1;
+            border-top-color: #1a6b4a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Main Grid - 2 Columns */
+        .clinical-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 28px;
         }
 
         /* Cards */
-        .card {
+        .clinical-card {
             background: white;
             border-radius: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
             overflow: hidden;
             border: 1px solid #e2eaf1;
         }
 
-        .card-header {
-            padding: 20px 26px;
+        .card-title {
+            padding: 18px 26px;
+            background: #fafdff;
             border-bottom: 2px solid #eef3f8;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .card-header h2 {
-            font-size: 1.3rem;
+        .card-title h2 {
+            font-size: 1.2rem;
             font-weight: 600;
             color: #1e4663;
         }
 
-        .card-body {
+        .card-content {
             padding: 24px 26px;
         }
 
-        /* Form Grid */
-        .form-grid {
+        /* Form Styling */
+        .form-two-columns {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 18px 22px;
         }
 
-        .field {
+        .input-field {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
-        .field label {
-            font-size: 0.7rem;
+        .input-field label {
+            font-size: 0.68rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             color: #4a7c9c;
         }
 
-        .field input, .field select {
+        .input-field input, .input-field select {
             padding: 11px 14px;
-            border: 1.5px solid #dee6ed;
+            border: 1.5px solid #e0e8ef;
             border-radius: 14px;
             font-size: 0.9rem;
             font-family: 'Inter', monospace;
@@ -188,39 +170,39 @@
             background: white;
         }
 
-        .field input:focus, .field select:focus {
+        .input-field input:focus, .input-field select:focus {
             outline: none;
             border-color: #2c7da0;
             box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
         }
 
-        .btn-predict {
+        .btn-assess {
             background: linear-gradient(105deg, #166534, #0f4c2f);
             color: white;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             padding: 14px;
             border: none;
             border-radius: 40px;
             width: 100%;
             margin-top: 28px;
             cursor: pointer;
-            transition: transform 0.1s;
+            transition: all 0.2s;
         }
 
-        .btn-predict:hover {
+        .btn-assess:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
         }
 
-        .btn-predict:disabled {
+        .btn-assess:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
-        /* Result Area */
-        .risk-display {
+        /* Result Styling - Medical Grade */
+        .result-risk-section {
             background: #f9fcff;
             border-radius: 20px;
             padding: 20px;
@@ -228,8 +210,8 @@
             border-left: 5px solid;
         }
 
-        .risk-score-large {
-            font-size: 3rem;
+        .risk-number {
+            font-size: 3.2rem;
             font-weight: 800;
             line-height: 1;
         }
@@ -237,8 +219,8 @@
         .risk-bar {
             background: #e2eaf1;
             border-radius: 20px;
-            height: 12px;
-            margin: 16px 0;
+            height: 10px;
+            margin: 14px 0;
             overflow: hidden;
         }
 
@@ -246,150 +228,149 @@
             height: 100%;
             width: 0%;
             border-radius: 20px;
-            transition: width 0.4s;
+            transition: width 0.5s ease;
         }
 
-        .param-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .clinical-params {
             margin: 20px 0;
         }
 
-        .param-item {
+        .param-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            align-items: center;
+            padding: 10px 0;
             border-bottom: 1px solid #e6edf3;
             font-size: 0.85rem;
         }
 
-        .reco-box {
+        .recommendation-clinical {
             background: #f0f6fc;
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 18px;
+            padding: 18px;
             font-size: 0.85rem;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
-        .method-tag {
+        .method-badge-small {
             display: inline-block;
-            background: #e9ecef;
+            background: #eef2f7;
             padding: 4px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 600;
+            margin-right: 8px;
         }
 
-        .empty-state {
+        .empty-clinical {
             text-align: center;
             padding: 60px 20px;
             color: #7a9cba;
         }
 
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .app {
-                padding: 16px;
-            }
-        }
-
         footer {
-            margin-top: 40px;
+            margin-top: 36px;
             text-align: center;
             font-size: 0.7rem;
             color: #6a8eaa;
             border-top: 1px solid #d4e2ec;
-            padding-top: 24px;
+            padding-top: 22px;
         }
 
-        .hidden-upload {
-            display: none;
+        @media (max-width: 900px) {
+            .clinical-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-two-columns {
+                grid-template-columns: 1fr;
+            }
+            .app-container {
+                padding: 12px;
+            }
+            .hospital-header {
+                padding: 18px 20px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <div class="header">
+<div class="app-container">
+    <div class="hospital-header">
         <h1>
-            🧬 AI Diabetes Risk Stratification
-            <span class="badge">SVM + Medical Rules ADA/EASD</span>
+            🧬 Diabetes Risk Assessment System
+            <span class="hospital-badge">AI Clinical Decision Support</span>
         </h1>
-        <div class="subtitle">
-            <span>⚕️ Clinical Decision Support System</span>
-            <span>🤖 Hybrid AI: Support Vector Machine + Guideline-Based Rules</span>
-            <span>🔄 KNN Similarity Verifier</span>
+        <div class="header-sub">
+            <span>⚕️ SVM + Guideline-Based Rules (ADA/EASD)</span>
+            <span>🤖 Hybrid Intelligence · KNN Similarity Verification</span>
         </div>
     </div>
 
-    <!-- Dataset Status Bar (Hilang setelah upload, berubah jadi info) -->
-    <div id="datasetStatusBar" class="dataset-status-bar">
-        <div class="dataset-info">
-            <span class="dataset-badge">📊 Belum ada dataset</span>
-            <div class="dataset-stats" id="statsPreview"></div>
-        </div>
-        <button id="uploadDatasetBtn" class="btn-change-dataset">📂 Upload Dataset (Excel/CSV)</button>
-        <input type="file" id="fileInputHidden" accept=".xlsx,.csv,.xls" class="hidden-upload">
-    </div>
-
-    <div class="main-grid">
-        <!-- Form Input Pasien -->
-        <div class="card">
-            <div class="card-header">
-                <span>🩺</span>
+    <div class="clinical-grid">
+        <!-- LEFT: Form Anamnesis -->
+        <div class="clinical-card">
+            <div class="card-title">
+                <span>📋</span>
                 <h2>Anamnesis & Pemeriksaan Fisik</h2>
             </div>
-            <div class="card-body">
-                <div class="form-grid" id="patientForm">
-                    <div class="field"><label>Jenis Kelamin</label><select id="gender"><option value="" disabled selected>-- Pilih --</option><option value="male">Laki-laki</option><option value="female">Perempuan</option></select></div>
-                    <div class="field"><label>Usia (tahun)</label><input type="number" id="age" placeholder="cth: 52"></div>
-                    <div class="field"><label>BMI (kg/m²)</label><input type="number" id="bmi" step="0.1" placeholder="cth: 27.5"></div>
-                    <div class="field"><label>Lingkar Pinggang (cm)</label><input type="number" id="waist" placeholder="cth: 94"></div>
-                    <div class="field"><label>Gula Puasa (mg/dL)</label><input type="number" id="glucose" placeholder="cth: 118"></div>
-                    <div class="field"><label>HbA1c (%)</label><input type="number" id="hba1c" step="0.1" placeholder="cth: 6.2"></div>
-                    <div class="field"><label>Insulin (µU/mL)</label><input type="number" id="insulin" placeholder="opsional"></div>
-                    <div class="field"><label>Tekanan Darah (mmHg)</label><input type="number" id="bp" placeholder="cth: 128"></div>
-                    <div class="field"><label>Kolesterol total (mg/dL)</label><input type="number" id="cholesterol" placeholder="cth: 195"></div>
-                    <div class="field"><label>Trigliserida (mg/dL)</label><input type="number" id="trig" placeholder="cth: 145"></div>
-                    <div class="field"><label>Aktivitas Fisik</label><select id="activity"><option value="" disabled selected>-- Pilih --</option><option value="very_high">Very High (atlet)</option><option value="high">High (aktif)</option><option value="moderate">Moderate</option><option value="low">Low</option><option value="sedentary">Sedentary</option></select></div>
-                    <div class="field"><label>Tidur (jam/hari)</label><input type="number" id="sleep" step="0.5" placeholder="cth: 6.5"></div>
-                    <div class="field"><label>Stress (1-10)</label><input type="number" id="stress" min="1" max="10" placeholder="cth: 6"></div>
-                    <div class="field"><label>Riwayat Keluarga Diabetes</label><select id="family"><option value="" disabled selected>-- Pilih --</option><option value="no">Tidak</option><option value="yes">Ya</option></select></div>
-                    <div class="field"><label>Asupan Gula (g/hari)</label><input type="number" id="sugar_intake" placeholder="cth: 45"></div>
+            <div class="card-content">
+                <div class="form-two-columns" id="patientForm">
+                    <div class="input-field"><label>Jenis Kelamin</label><select id="gender"><option value="" disabled selected>-- Pilih --</option><option value="male">Laki-laki</option><option value="female">Perempuan</option></select></div>
+                    <div class="input-field"><label>Usia (tahun)</label><input type="number" id="age" placeholder="cth: 52"></div>
+                    <div class="input-field"><label>BMI (kg/m²)</label><input type="number" id="bmi" step="0.1" placeholder="cth: 27.3"></div>
+                    <div class="input-field"><label>Lingkar Pinggang (cm)</label><input type="number" id="waist" placeholder="cth: 94"></div>
+                    <div class="input-field"><label>Gula Puasa (mg/dL)</label><input type="number" id="glucose" placeholder="cth: 118"></div>
+                    <div class="input-field"><label>HbA1c (%)</label><input type="number" id="hba1c" step="0.1" placeholder="cth: 6.2"></div>
+                    <div class="input-field"><label>Insulin (µU/mL)</label><input type="number" id="insulin" placeholder="opsional"></div>
+                    <div class="input-field"><label>Tekanan Darah (mmHg)</label><input type="number" id="bp" placeholder="cth: 128"></div>
+                    <div class="input-field"><label>Kolesterol total (mg/dL)</label><input type="number" id="cholesterol" placeholder="cth: 195"></div>
+                    <div class="input-field"><label>Trigliserida (mg/dL)</label><input type="number" id="trig" placeholder="cth: 145"></div>
+                    <div class="input-field"><label>Aktivitas Fisik</label><select id="activity"><option value="" disabled selected>-- Pilih --</option><option value="very_high">Very High (atlet)</option><option value="high">High (aktif)</option><option value="moderate">Moderate</option><option value="low">Low</option><option value="sedentary">Sedentary</option></select></div>
+                    <div class="input-field"><label>Tidur (jam/hari)</label><input type="number" id="sleep" step="0.5" placeholder="cth: 6.5"></div>
+                    <div class="input-field"><label>Stress (1-10)</label><input type="number" id="stress" min="1" max="10" placeholder="cth: 6"></div>
+                    <div class="input-field"><label>Riwayat Keluarga Diabetes</label><select id="family"><option value="" disabled selected>-- Pilih --</option><option value="no">Tidak</option><option value="yes">Ya</option></select></div>
+                    <div class="input-field"><label>Asupan Gula (g/hari)</label><input type="number" id="sugar_intake" placeholder="cth: 45"></div>
                 </div>
-                <button class="btn-predict" id="predictBtn" disabled>🔍 Generate Risk Assessment</button>
+                <button class="btn-assess" id="assessBtn" disabled>🔍 Run Clinical Assessment</button>
             </div>
         </div>
 
-        <!-- Hasil Prediksi -->
-        <div class="card">
-            <div class="card-header">
-                <span>📋</span>
+        <!-- RIGHT: Hasil Assessment -->
+        <div class="clinical-card">
+            <div class="card-title">
+                <span>📊</span>
                 <h2>Clinical Assessment & Recommendation</h2>
             </div>
-            <div class="card-body" id="resultPanel">
-                <div class="empty-state">
-                    <span style="font-size: 3rem;">🩻</span>
-                    <p style="margin-top: 16px;">Upload dataset untuk mengaktifkan AI prediction (SVM + Medical Rules).</p>
-                    <p style="font-size: 0.8rem; margin-top: 8px;">Setelah training, sistem akan siap memprediksi risiko diabetes Anda.</p>
+            <div class="card-content" id="resultPanel">
+                <div class="empty-clinical">
+                    <span style="font-size: 3rem;">🩺</span>
+                    <p style="margin-top: 16px;">Silakan upload dataset untuk melatih AI prediction engine.</p>
+                    <p style="font-size: 0.8rem; margin-top: 8px;">Klik tombol di bawah untuk memulai.</p>
+                    <button id="startUploadBtn" style="margin-top: 20px; background: #2c7da0; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600;">📁 Upload Dataset (Excel/CSV)</button>
                 </div>
             </div>
         </div>
     </div>
     <footer>
-        ⚕️ Standar ADA 2025 & WHO. Sistem hibrida: SVM (trained from your data) + Clinical Rules Engine + KNN similarity. Konsultasikan dengan tenaga medis profesional.
+        ⚕️ Mengacu pada standar American Diabetes Association (ADA) 2025 & WHO. Sistem hybrid: Support Vector Machine + Clinical Rules Engine.
     </footer>
 </div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Memproses dataset & melatih SVM...</p>
+        <p style="font-size: 0.8rem; margin-top: 8px;">Mohon tunggu</p>
+    </div>
+</div>
+
+<input type="file" id="datasetUpload" accept=".xlsx,.csv,.xls" class="hidden-upload">
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
     // --------------------------------------------------------------
-    // MEDICAL RULES ENGINE (Identik dengan Python)
+    // MEDICAL RULES ENGINE
     // --------------------------------------------------------------
     const MedicalRules = {
         calculateRiskScore(data) {
@@ -501,19 +482,19 @@
         }
     };
     
-    // helpers
+    // Helpers
     function encodeGender(g) { return g === 'male' ? 0 : 1; }
     function encodeActivity(a) { const map = { very_high:4, high:3, moderate:2, low:1, sedentary:0 }; return map[a] ?? 2; }
     function encodeFamily(f) { return f === 'yes' ? 1 : 0; }
     
-    // Global state
+    // Global model state
+    let modelReady = false;
     let trainedWeights = null;
     let scaler = { mean: null, std: null };
     let trainingMatrix = null;
-    let isModelReady = false;
-    let datasetInfo = { total: 0, low: 0, pre: 0, high: 0 };
+    let datasetTotal = 0;
     
-    // Ridge regression
+    // Ridge Regression
     function trainRidge(X, y, lambda=0.2) {
         const n = X.length, m = X[0].length;
         let Xb = X.map(row => [1, ...row]);
@@ -550,15 +531,17 @@
         return features.map((v,i) => (v - mean[i]) / std[i]);
     }
     
-    // Dataset processing
+    // Process dataset
     async function processDataset(file) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        
         const data = await file.arrayBuffer();
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         let rows = XLSX.utils.sheet_to_json(sheet);
         if (!rows.length) throw new Error("Dataset kosong");
         
-        // mapping kolom
+        // Column mapping
         const colMap = {};
         Object.keys(rows[0]).forEach(k => {
             let c = k.toLowerCase();
@@ -568,22 +551,21 @@
             else if (c.includes('waist')||c.includes('pinggang')) colMap[k]='waist';
             else if (c.includes('gula')&&c.includes('puasa')) colMap[k]='fasting_glucose';
             else if (c.includes('hba1c')) colMap[k]='hba1c';
-            else if (c.includes('insulin')) colMap[k]='insulin';
             else if (c.includes('tekanan')||c.includes('blood')) colMap[k]='blood_pressure';
-            else if (c.includes('kolesterol')) colMap[k]='cholesterol';
             else if (c.includes('trigliserida')) colMap[k]='triglycerides';
             else if (c.includes('aktivitas')||c.includes('activity')) colMap[k]='activity';
             else if (c.includes('tidur')||c.includes('sleep')) colMap[k]='sleep_hours';
             else if (c.includes('stress')) colMap[k]='stress_level';
             else if (c.includes('keluarga')||c.includes('family')) colMap[k]='family_history';
         });
+        
         let df = rows.map(r => {
             let obj = {};
             Object.keys(r).forEach(k => { obj[colMap[k] || k] = r[k]; });
             return obj;
         });
         
-        // hitung risk score
+        // Calculate risk scores
         df = df.map(r => {
             const pat = {
                 gender: r.gender || 'male', hba1c: r.hba1c ?? 5.4, fasting_glucose: r.fasting_glucose ?? 95,
@@ -596,6 +578,7 @@
             return { ...r, risk_score: risk };
         });
         
+        // Build features
         const featuresList = [];
         const targets = [];
         for (let row of df) {
@@ -609,70 +592,68 @@
             targets.push(row.risk_score);
         }
         
-        // scaler
+        // Standardization
         const nFeat = 12;
         let mean = Array(nFeat).fill(0), std = Array(nFeat).fill(0);
         for (let f of featuresList) for (let i=0;i<nFeat;i++) mean[i] += f[i];
         for (let i=0;i<nFeat;i++) mean[i] /= featuresList.length;
         for (let f of featuresList) for (let i=0;i<nFeat;i++) std[i] += (f[i]-mean[i])**2;
         for (let i=0;i<nFeat;i++) std[i] = Math.sqrt(std[i]/featuresList.length) || 1;
+        
         const Xscaled = featuresList.map(f => standardize(f, mean, std));
         const weights = trainRidge(Xscaled, targets, 0.2);
         
         trainedWeights = weights;
         scaler = { mean, std };
         trainingMatrix = Xscaled;
-        isModelReady = true;
+        datasetTotal = df.length;
+        modelReady = true;
         
-        // update stats
-        const low = df.filter(d=>d.risk_score<35).length;
-        const pre = df.filter(d=>d.risk_score>=35 && d.risk_score<70).length;
-        const high = df.filter(d=>d.risk_score>=70).length;
-        datasetInfo = { total: df.length, low, pre, high };
+        document.getElementById('loadingOverlay').style.display = 'none';
         
-        // update UI status bar (hilangkan tombol upload, tampilkan info lengkap)
-        const statusDiv = document.getElementById('datasetStatusBar');
-        statusDiv.innerHTML = `
-            <div class="dataset-info">
-                <span class="dataset-badge">✅ Dataset aktif: ${datasetInfo.total} sampel</span>
-                <div class="dataset-stats">
-                    <span class="stat-chip">🟢 Low Risk: ${datasetInfo.low}</span>
-                    <span class="stat-chip">🟡 Prediabetes: ${datasetInfo.pre}</span>
-                    <span class="stat-chip">🔴 High Risk: ${datasetInfo.high}</span>
-                </div>
-                <span class="stat-chip" style="background:#e9f0f5;">🤖 SVM Model: ${datasetInfo.total >= 10 ? 'Trained & Ready' : 'Fallback Mode'}</span>
+        // Update UI: hilangkan tombol upload, tampilkan header tanpa info dataset
+        const rightPanel = document.getElementById('resultPanel');
+        rightPanel.innerHTML = `
+            <div class="empty-clinical" style="background:#f0f7fc; border-radius:20px;">
+                <span style="font-size: 2.5rem;">✅</span>
+                <p style="margin-top: 12px; font-weight: 500;">Model AI siap digunakan</p>
+                <p style="font-size: 0.8rem;">${datasetTotal} sampel klinis berhasil diproses. Silakan isi data pasien.</p>
             </div>
-            <button id="changeDatasetBtn" class="btn-change-dataset">🔄 Ganti Dataset</button>
-            <input type="file" id="changeFileInput" accept=".xlsx,.csv,.xls" class="hidden-upload">
         `;
-        // re-attach event
-        document.getElementById('changeDatasetBtn').addEventListener('click', () => {
-            document.getElementById('changeFileInput').click();
-        });
-        document.getElementById('changeFileInput').addEventListener('change', (e) => {
-            if (e.target.files.length) processDataset(e.target.files[0]);
-        });
         
-        document.getElementById('predictBtn').disabled = false;
-        alert(`✅ Training sukses! ${datasetInfo.total} sampel diproses. Sistem siap melakukan prediksi hibrida.`);
+        document.getElementById('assessBtn').disabled = false;
+        
+        // Optional small notification
+        const header = document.querySelector('.hospital-header h1');
+        if (!header.querySelector('.ready-badge')) {
+            const readySpan = document.createElement('span');
+            readySpan.className = 'hospital-badge';
+            readySpan.style.background = '#1a6b4a';
+            readySpan.innerHTML = '✓ AI Active';
+            header.appendChild(readySpan);
+        }
     }
     
-    // Upload dataset awal
-    document.getElementById('uploadDatasetBtn').addEventListener('click', () => {
-        document.getElementById('fileInputHidden').click();
+    // Trigger upload
+    document.getElementById('startUploadBtn')?.addEventListener('click', () => {
+        document.getElementById('datasetUpload').click();
     });
-    document.getElementById('fileInputHidden').addEventListener('change', (e) => {
+    
+    // Re-attach jika tombol ada di dalam panel (setelah render ulang)
+    document.getElementById('datasetUpload').addEventListener('change', (e) => {
         if (e.target.files.length) processDataset(e.target.files[0]);
     });
     
     // Prediction
-    document.getElementById('predictBtn').addEventListener('click', () => {
-        if (!isModelReady) { alert("Harap upload dataset terlebih dahulu."); return; }
+    document.getElementById('assessBtn').addEventListener('click', () => {
+        if (!modelReady) { alert("Harap upload dataset terlebih dahulu."); return; }
+        
         const required = ['gender','age','bmi','waist','glucose','hba1c','insulin','bp','cholesterol','trig','activity','sleep','stress','family','sugar_intake'];
         for (let id of required) {
             const val = document.getElementById(id).value;
-            if (!val || val === "") { alert("Harap lengkapi semua data pasien."); return; }
+            if (!val || val === "") { alert("Lengkapi semua data pasien."); return; }
         }
+        
         const patient = {
             gender: document.getElementById('gender').value,
             age: parseFloat(document.getElementById('age').value),
@@ -693,6 +674,7 @@
         
         const rulesScore = MedicalRules.calculateRiskScore(patient);
         let finalScore, methodUsed, svmPred = null;
+        
         const features = [
             encodeGender(patient.gender), patient.age, patient.bmi, patient.waist, patient.fasting_glucose,
             patient.hba1c, patient.blood_pressure, patient.triglycerides, encodeActivity(patient.activity),
@@ -706,26 +688,25 @@
         }
         const isSimilar = avgDist < 2.6;
         
-        if (datasetInfo.total >= 10 && trainedWeights && isSimilar) {
+        if (datasetTotal >= 10 && trainedWeights && isSimilar) {
             let svmVal = trainedWeights[0];
             for (let i=0;i<12;i++) svmVal += trainedWeights[i+1] * scaledFeat[i];
             svmPred = Math.min(100, Math.max(0, svmVal));
             finalScore = (svmPred * 0.6) + (rulesScore * 0.4);
-            methodUsed = "Hybrid AI: SVM (60%) + Clinical Rules (40%) · Similarity OK";
-        } else if (datasetInfo.total >= 10 && !isSimilar) {
-            finalScore = rulesScore;
-            methodUsed = "Clinical Rules (KNN similarity threshold exceeded) + Fallback";
+            methodUsed = "Hybrid AI: SVM + Clinical Rules";
         } else {
             finalScore = rulesScore;
-            methodUsed = "Medical Rules (insufficient training data)";
+            methodUsed = "Clinical Guidelines (ADA/EASD)";
         }
+        
         finalScore = Math.round(finalScore * 10) / 10;
         const category = MedicalRules.getCategory(finalScore);
-        let barColor, bgLight;
-        if(category === "Low Risk") { barColor="#2b7a62"; bgLight="#e0f2e9"; }
-        else if(category === "Prediabetes") { barColor="#e6a017"; bgLight="#fff0db"; }
-        else { barColor="#c93a2b"; bgLight="#ffe6e5"; }
+        let barColor, bgLight, riskIcon;
+        if(category === "Low Risk") { barColor="#2b7a62"; bgLight="#e0f2e9"; riskIcon="🟢"; }
+        else if(category === "Prediabetes") { barColor="#e6a017"; bgLight="#fff0db"; riskIcon="🟡"; }
+        else { barColor="#c93a2b"; bgLight="#ffe6e5"; riskIcon="🔴"; }
         
+        // Parameter list
         let paramHtml = "";
         const plist = [
             ['HbA1c', patient.hba1c, 'hba1c'], ['Gula Puasa', patient.fasting_glucose, 'fasting_glucose'],
@@ -734,24 +715,24 @@
         ];
         plist.forEach(p => {
             const [status, emoji] = MedicalRules.getStatus(p[2], p[1], patient.gender);
-            paramHtml += `<div class="param-item"><span>${emoji} ${p[0]}</span><span><strong>${p[1]}</strong> → ${status}</span></div>`;
+            paramHtml += `<div class="param-row"><span>${emoji} ${p[0]}</span><span><strong>${p[1]}</strong> → ${status}</span></div>`;
         });
         
         let recoText = "";
-        if(category === "Low Risk") recoText = "✅ Pertahankan gaya hidup sehat, kontrol berkala. 🏃 Aktivitas fisik rutin, diet seimbang, pantau berat badan.";
-        else if(category === "Prediabetes") recoText = "⚠️ Program intensif: target turun 5-7% berat badan, olahraga 150 menit/minggu, kurangi karbohidrat olahan. Konsultasi ke dokter untuk evaluasi metformin.";
-        else recoText = "🔴 SEGERA KONSULTASI DOKTER SPESIALIS. Evaluasi HbA1c, gula darah puasa, terapi farmakologi (metformin/insulin). Monitor mandiri dan edukasi diabetes.";
+        if(category === "Low Risk") recoText = "✅ Pertahankan gaya hidup sehat, aktivitas fisik teratur, diet seimbang, kontrol berat badan, dan evaluasi berkala setiap 1-2 tahun.";
+        else if(category === "Prediabetes") recoText = "⚠️ Program intervensi intensif: target penurunan berat badan 5-7%, olahraga 150 menit/minggu, konseling gizi, pertimbangkan metformin jika risiko tinggi. Evaluasi HbA1c setiap 3-6 bulan.";
+        else recoText = "🔴 SEGERA KONSULTASI ENDOKRINOLOGI. Evaluasi komprehensif, terapi farmakologi (metformin/insulin), edukasi diabetes, monitoring mandiri gula darah, dan skrining komplikasi.";
         
         const resultHtml = `
-            <div class="risk-display" style="border-left-color: ${barColor}; background: ${bgLight};">
-                <div><span class="method-tag">${category === "Low Risk" ? "🟢" : category === "Prediabetes" ? "🟡" : "🔴"} ${category}</span> <span class="method-tag">${methodUsed}</span></div>
-                <div class="risk-score-large">${finalScore}<span style="font-size:1.2rem;">/100</span></div>
+            <div class="result-risk-section" style="border-left-color: ${barColor}; background: ${bgLight};">
+                <div><span class="method-badge-small">${riskIcon} ${category}</span> <span class="method-badge-small">${methodUsed}</span></div>
+                <div class="risk-number">${finalScore}<span style="font-size:1rem;">/100</span></div>
                 <div class="risk-bar"><div class="risk-fill" style="width: ${finalScore}%; background: ${barColor};"></div></div>
-                ${svmPred !== null ? `<div style="font-size:0.7rem;">SVM internal: ${Math.round(svmPred)} | Medical Rules: ${Math.round(rulesScore)}</div>` : `<div style="font-size:0.7rem;">Medical Rules score: ${Math.round(rulesScore)}</div>`}
+                ${svmPred !== null ? `<div style="font-size:0.68rem; margin-top:6px;">SVM internal: ${Math.round(svmPred)} | Rules: ${Math.round(rulesScore)}</div>` : `<div style="font-size:0.68rem;">Clinical Rules score: ${Math.round(rulesScore)}</div>`}
             </div>
-            <div><strong>📊 Parameter Klinis (Standar ADA)</strong></div>
-            <div class="param-list">${paramHtml}</div>
-            <div class="reco-box"><strong>📋 Rekomendasi Evidence-Based</strong><br>${recoText}</div>
+            <div style="margin: 6px 0 10px 0;"><strong>📊 Parameter Klinis</strong> <span style="font-size:0.7rem;">(Standar ADA)</span></div>
+            <div class="clinical-params">${paramHtml}</div>
+            <div class="recommendation-clinical"><strong>📋 Rekomendasi Evidence-Based</strong><br>${recoText}</div>
         `;
         document.getElementById('resultPanel').innerHTML = resultHtml;
     });
